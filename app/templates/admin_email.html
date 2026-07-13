@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #334155;
+      margin: 0;
+      padding: 0;
+    }
+    .wrapper {
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 580px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+    }
+    .header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      padding: 32px;
+      text-align: center;
+    }
+    .header h1 {
+      color: #ffffff;
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .content {
+      padding: 40px 32px;
+    }
+    .content p {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin: 0 0 24px 0;
+    }
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+    }
+    .details-table th, .details-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .details-table th {
+      color: #64748b;
+      font-weight: 600;
+      width: 140px;
+    }
+    .details-table td {
+      color: #0f172a;
+      font-weight: 500;
+    }
+    .footer {
+      background-color: #f8fafc;
+      padding: 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <h1>New Demo Request</h1>
+      </div>
+      <div class="content">
+        <p>Hello Team,</p>
+        <p>A new demo booking has been requested on the website. Here are the submission details:</p>
+        <table class="details-table">
+          <tr>
+            <th>First Name</th>
+            <td>{{ first_name }}</td>
+          </tr>
+          <tr>
+            <th>Last Name</th>
+            <td>{{ last_name }}</td>
+          </tr>
+          <tr>
+            <th>Email</th>
+            <td>{{ email }}</td>
+          </tr>
+          <tr>
+            <th>Suitable Date</th>
+            <td>{{ suitable_date }}</td>
+          </tr>
+          <tr>
+            <th>Suitable Time</th>
+            <td>{{ suitable_time }}</td>
+          </tr>
+        </table>
+        <p>The record has been written to the SharePoint Excel sheet.</p>
+      </div>
+      <div class="footer">
+        Social Studying AI &copy; 2026. All rights reserved.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
