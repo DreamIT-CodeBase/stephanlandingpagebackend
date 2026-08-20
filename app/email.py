@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 from jinja2 import Environment, FileSystemLoader
 from app.config import settings
 from app.auth import get_access_token
-from app.models import BookDemo
+from app.models import BookDemo, DeletionRequest
 
 logger = logging.getLogger(__name__)
 
@@ -145,3 +145,47 @@ def send_booking_emails(booking: BookDemo):
         cc_emails=cc_list
     )
     logger.info("Sent admin notification email to %s with CC %s", admin_recipient, cc_list)
+
+
+def send_deletion_emails(request: DeletionRequest, reference_id: str):
+    from datetime import datetime
+    request_date = request.requestedAt or datetime.now().strftime("%B %d, %Y at %I:%M %p")
+
+    render_vars = {
+        "email": str(request.email),
+        "username": request.username or "N/A",
+        "reason": request.reason or "Not specified",
+        "request_date": request_date,
+        "reference_id": reference_id,
+    }
+
+    # 1. User confirmation email
+    try:
+        user_html = render_template("user_deletion_email.html", **render_vars)
+        dispatch_email(
+            to_email=str(request.email),
+            subject="Account Deletion Request Confirmation - Social Studying AI",
+            html_content=user_html,
+        )
+        logger.info("Sent deletion confirmation email to user: %s", request.email)
+    except Exception as exc:
+        logger.error("User deletion receipt email failed: %s", exc)
+
+    # 2. Admin alert email to socials@socialstudying.ai + CCs
+    admin_recipient = settings.ADMIN_EMAIL or "socials@socialstudying.ai"
+    cc_list = None
+    if settings.CC_EMAILS:
+        cc_list = [cc.strip() for cc in settings.CC_EMAILS.split(",") if cc.strip()]
+
+    try:
+        admin_html = render_template("admin_deletion_email.html", **render_vars)
+        dispatch_email(
+            to_email=admin_recipient,
+            subject=f"[ACTION REQUIRED] Account Deletion Request: {request.email}",
+            html_content=admin_html,
+            cc_emails=cc_list,
+        )
+        logger.info("Sent admin deletion alert to %s with CC %s", admin_recipient, cc_list)
+    except Exception as exc:
+        logger.error("Admin deletion email failed: %s", exc)
+

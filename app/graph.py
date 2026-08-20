@@ -5,7 +5,7 @@ from urllib.parse import quote
 import requests
 from app.config import settings
 from app.auth import get_access_token
-from app.models import BookDemo
+from app.models import BookDemo, DeletionRequest
 
 logger = logging.getLogger(__name__)
 
@@ -128,3 +128,46 @@ def add_booking_to_excel(booking: BookDemo):
     except Exception as e:
         logger.error(f"Failed to add row to Excel: {e}")
         raise
+
+
+def add_deletion_request_to_excel(request: DeletionRequest):
+    """Append an account deletion request row to the configured SharePoint Excel table."""
+    try:
+        token = get_access_token()
+        drive_id = get_drive_id(token)
+        file_id = get_file_id(token, drive_id)
+        table_id = get_table_id(token, drive_id, file_id)
+
+        now = datetime.now(timezone.utc)
+        date_str = now.strftime("%Y-%m-%d")
+        time_str = now.strftime("%H:%M")
+        created_on = now.isoformat(timespec="seconds")
+        full_name = f"[ACCOUNT DELETION] {request.username or request.email}"
+        reason_text = f"DELETION: {request.reason}" if request.reason else "DELETION REQUEST"
+
+        values = [[
+            full_name,
+            str(request.email),
+            "Account Deletion",
+            request.username or "N/A",
+            date_str,
+            time_str,
+            reason_text,
+            created_on,
+        ]]
+        encoded_table_id = quote(table_id, safe="")
+        url = f"{settings.GRAPH_BASE}/drives/{drive_id}/items/{file_id}/workbook/tables/{encoded_table_id}/rows/add"
+        response = requests.post(
+            url,
+            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+            json={"values": values},
+            timeout=30,
+        )
+        response.raise_for_status()
+        logger.info("Successfully added deletion request for %s to SharePoint Excel", request.email)
+        return {"status": "success"}
+
+    except Exception as e:
+        logger.error(f"Failed to add deletion row to Excel: {e}")
+        raise
+

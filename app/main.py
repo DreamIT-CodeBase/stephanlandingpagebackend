@@ -3,9 +3,9 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.models import BookDemo, APIResponse
-from app.graph import add_booking_to_excel
-from app.email import send_booking_emails
+from app.models import BookDemo, DeletionRequest, APIResponse
+from app.graph import add_booking_to_excel, add_deletion_request_to_excel
+from app.email import send_booking_emails, send_deletion_emails
 from app.config import settings
 
 # Configure logging
@@ -60,6 +60,37 @@ async def book_demo(booking: BookDemo):
         success=True,
         message="Demo request submitted and confirmation email sent successfully!"
     )
+
+
+@app.post("/api/delete-account", response_model=APIResponse)
+@app.post("/api/request-deletion", response_model=APIResponse)
+async def request_account_deletion(request: DeletionRequest):
+    import uuid
+    reference_id = f"DEL-{uuid.uuid4().hex[:8].upper()}"
+
+    logger.info("Received account deletion request for: %s (Username: %s, Ref: %s)", request.email, request.username, reference_id)
+
+    # 1. Save deletion record to SharePoint Excel Sheet
+    try:
+        add_deletion_request_to_excel(request)
+        logger.info("Successfully added deletion request to SharePoint Excel table")
+    except Exception as e:
+        logger.error("SharePoint Excel deletion logging failed: %s", e)
+        # Continue to attempt sending email alert even if Excel write fails
+
+    # 2. Dispatch Graph API / SMTP notification emails (user receipt & admin alert)
+    try:
+        send_deletion_emails(request, reference_id)
+        logger.info("Successfully dispatched deletion alert emails")
+    except Exception as e:
+        logger.error("Deletion alert email dispatch failed: %s", e)
+
+    return APIResponse(
+        success=True,
+        message=f"Account deletion request received for {request.email}. Reference ID: {reference_id}. Our privacy team will process it within 30 days.",
+        referenceId=reference_id,
+    )
+
 
 
 @app.get("/api/health")

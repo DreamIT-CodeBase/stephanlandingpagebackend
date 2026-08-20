@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #334155;
+      margin: 0;
+      padding: 0;
+    }
+    .wrapper {
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 580px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+    }
+    .header {
+      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+      padding: 32px;
+      text-align: center;
+    }
+    .header h1 {
+      color: #ffffff;
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 4px 12px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .content {
+      padding: 36px 32px;
+    }
+    .content p {
+      font-size: 1.02rem;
+      line-height: 1.6;
+      margin: 0 0 20px 0;
+    }
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      background-color: #f8fafc;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .details-table th, .details-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .details-table th {
+      color: #64748b;
+      font-weight: 600;
+      width: 140px;
+      font-size: 0.9rem;
+    }
+    .details-table td {
+      color: #0f172a;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .alert-box {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: #991b1b;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .footer {
+      background-color: #f8fafc;
+      padding: 20px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <h1>Account Deletion Request</h1>
+        <span class="badge">Action Required &bull; 30 Days SLA</span>
+      </div>
+      <div class="content">
+        <p>Hello Social Studying AI Admin Team,</p>
+        <p>A user has submitted an official account and data deletion request via the portal:</p>
+        
+        <table class="details-table">
+          <tr>
+            <th>User Email</th>
+            <td><strong style="color: #dc2626;">{{ email }}</strong></td>
+          </tr>
+          <tr>
+            <th>Username / ID</th>
+            <td>{{ username or 'Not provided' }}</td>
+          </tr>
+          <tr>
+            <th>Reason</th>
+            <td>{{ reason or 'No specific reason provided' }}</td>
+          </tr>
+          <tr>
+            <th>Submission Date</th>
+            <td>{{ request_date }}</td>
+          </tr>
+          <tr>
+            <th>Reference ID</th>
+            <td><code>{{ reference_id }}</code></td>
+          </tr>
+        </table>
+
+        <div class="alert-box">
+          <strong>Compliance Notice:</strong> In accordance with Google Play &amp; Apple App Store policies and Privacy Regulations (GDPR/CCPA), please purge or anonymize the user's associated data within 30 days.
+        </div>
+
+        <p style="font-size: 0.88rem; color: #64748b; margin: 0;">
+          This record has also been logged in the SharePoint Excel Tracking Sheet.
+        </p>
+      </div>
+      <div class="footer">
+        Social Studying AI Privacy &amp; Compliance System &bull; socials@socialstudying.ai
+      </div>
+    </div>
+  </div>
+</body>
+</html>
